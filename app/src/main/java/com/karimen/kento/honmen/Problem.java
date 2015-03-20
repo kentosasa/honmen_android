@@ -1,6 +1,4 @@
-package com.karimen.kento.karimen;
-
-import android.widget.LinearLayout;
+package com.karimen.kento.honmen;
 
 /**
  * Created by Kento on 15/02/09.

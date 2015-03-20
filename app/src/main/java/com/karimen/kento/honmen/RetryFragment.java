@@ -1,4 +1,4 @@
-package com.karimen.kento.karimen;
+package com.karimen.kento.honmen;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -7,7 +7,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,20 +25,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ItimonIttouFragment extends Fragment {
+/**
+ * Created by Kento on 15/02/14.
+ */
+public class RetryFragment extends Fragment {
 
     final Gson gson = new Gson();
     SharedPreferences pref;
     ArrayList<Integer> review_list;
     ArrayList<Problem> problems = new ArrayList<Problem>();
-    final String url = "https://menkyo.herokuapp.com/api/get_all_problems?honmen=1";
+    String url = "https://menkyo.herokuapp.com/api/get_review_list?list=";
     String put_correct = "https://menkyo.herokuapp.com/api/put_correct?id=";
     String put_miss = "https://menkyo.herokuapp.com/api/put_miss?id=";
     AQuery aq;
     Context context;
     int question_num = 0;
 
-    public ItimonIttouFragment() {
+    public RetryFragment() {
         // Required empty public constructor
     }
 
@@ -51,9 +53,12 @@ public class ItimonIttouFragment extends Fragment {
         pref = context.getSharedPreferences("pref",Context.MODE_PRIVATE);
         review_list = gson.fromJson(pref.getString("review_list", gson.toJson(new ArrayList<Integer>())), new TypeToken<ArrayList<Integer>>(){}.getType());
 
+        for (int i = 0; i < review_list.size(); i++){
+            url = url + review_list.get(i) + ",";
+        }
         aq = new AQuery(getActivity(), view);
 
-        aq.id(R.id.text_title).text("一問一答");
+        aq.id(R.id.text_title).text("復習問題");
         aq.ajax(url, JSONArray.class, this, "jsonArrayCallback");
         aq.id(R.id.layout_mogi).gone();
         aq.id(R.id.button_maru).clicked(new View.OnClickListener() {
@@ -76,15 +81,10 @@ public class ItimonIttouFragment extends Fragment {
         problems.get(question_num).setUser_answer(click_button);
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         if (String.valueOf(problems.get(question_num).isCorrect_answer()) == String.valueOf(click_button)){
-            aq.ajax(put_correct+problems.get(question_num).getId(), String.class, this, "");
             dialog.setIcon(R.drawable.maru_50);
             dialog.setTitle("正解");
 
         }else{
-            review_list.add(problems.get(question_num).getId());
-            pref.edit().putString("review_list", gson.toJson(review_list)).commit();
-
-            aq.ajax(put_miss+problems.get(question_num).getId(), String.class, this, "");
             dialog.setIcon(R.drawable.batu_50);
             dialog.setTitle("不正解");
         }
@@ -92,10 +92,9 @@ public class ItimonIttouFragment extends Fragment {
         dialog.setNegativeButton("次へ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (question_num < problems.size()-1) question_num++;
-                else  question_num = 0;
-                setQuestion();
-
+                if (question_num < problems.size() - 1) question_num++;
+                else question_num = 0;
+                aq.id(R.id.text_problem).text(problems.get(question_num).question_text);
             }
         });
         dialog.setPositiveButton("詳細", new DialogInterface.OnClickListener() {
@@ -112,44 +111,50 @@ public class ItimonIttouFragment extends Fragment {
                 ft.addToBackStack(null);
                 ft.commit();
 
-                if (question_num < problems.size()-1) question_num++;
-                else  question_num = 0;
-                setQuestion();
+                if (question_num < problems.size() - 1) question_num++;
+                else question_num = 0;
+                aq.id(R.id.text_problem).text(problems.get(question_num).question_text);
+            }
+        });
+        dialog.setNeutralButton("リストから削除", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                review_list.remove(question_num);
+                review_list = gson.fromJson(pref.getString("review_list", gson.toJson(new ArrayList<Integer>())), new TypeToken<ArrayList<Integer>>(){}.getType());
+                if (question_num < problems.size() - 1) question_num++;
+                else question_num = 0;
+                aq.id(R.id.text_problem).text(problems.get(question_num).question_text);
             }
         });
         dialog.show();
-    }
 
-    public void setQuestion(){
-        String image_url = problems.get(question_num).getQuestion_image_url();
-        if (image_url.length() > 5){
-            aq.id(R.id.image_problem).visible();
-            aq.id(R.id.image_problem).image(image_url);
-        }else{
-            aq.id(R.id.image_problem).gone();
-        }
-        aq.id(R.id.text_problem).text(problems.get(question_num).question_text);
     }
 
     public void jsonArrayCallback(String url, JSONArray jsonArray, AjaxStatus status){
+        Log.e("Callback", "Callback");
+        Log.e("URL", url);
         if (jsonArray != null){
-            for (int i = 0; jsonArray.length() > i; i++) {
-                try {
-                    Problem data = new Problem();
-                    JSONObject raw = jsonArray.getJSONObject(i);
-                    data.setId(raw.getInt("id"));
-                    data.setQuestion_image_url(raw.getString("question_image_url"));
-                    data.setQuestion_text(raw.getString("question_text"));
-                    data.setExplanation(raw.getString("explanation"));
-                    data.setCorrect_answer(raw.getBoolean("correct_answer"));
-                    Log.e("Get Problem", "No." + data.getId());
+            if (jsonArray.length() > 0){
+                for (int i = 0; jsonArray.length() > i; i++) {
+                    try {
+                        Problem data = new Problem();
+                        JSONObject raw = jsonArray.getJSONObject(i);
+                        data.setId(raw.getInt("id"));
+                        data.setQuestion_image_url(raw.getString("question_image_url"));
+                        data.setQuestion_text(raw.getString("question_text"));
+                        data.setExplanation(raw.getString("explanation"));
+                        data.setCorrect_answer(raw.getBoolean("correct_answer"));
+                        Log.e("Get Problem", "No." + data.getId());
 
-                    aq.id(R.id.layout_mogi).visible();
-                    aq.id(R.id.progressBar).gone();
-                    problems.add(data);
-                } catch (JSONException e) {
-                    Log.e("JsonParse失敗", "残念");
-                };
+                        aq.id(R.id.layout_mogi).visible();
+                        aq.id(R.id.progressBar).gone();
+                        problems.add(data);
+                    } catch (JSONException e) {
+                        Log.e("JsonParse失敗", "残念");
+                    };
+                }
+            }else{
+               Toast.makeText(context, "復習問題が存在しません", Toast.LENGTH_SHORT).show();
             }
             aq.id(R.id.text_problem).text(problems.get(question_num).question_text);
             aq.id(R.id.layout_mogi).visible();

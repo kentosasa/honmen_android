@@ -1,25 +1,19 @@
-package com.karimen.kento.karimen;
+package com.karimen.kento.honmen;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -37,8 +31,20 @@ public class TopFragment extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_top, container, false);
         final Context context = getActivity();
-        AQuery aq = new AQuery(getActivity(), view);
+        final AQuery aq = new AQuery(getActivity(), view);
+
 //        aq.id(R.id.image_top).image("http://www5b.biglobe.ne.jp/~nobusann/777/honmen/hyouj42.gif");
+//        aq.id(R.id.image_top).clicked(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (new Random().nextBoolean()){
+//                    aq.id(R.id.image_top).image("http://www5b.biglobe.ne.jp/~nobusann/777/honmen/hyou012a.gif");
+//                }else{
+//                    aq.id(R.id.image_top).image("http://www5b.biglobe.ne.jp/~nobusann/777/honmen/hyou002.gif");
+//                }
+//
+//            }
+//        });
 //        Picasso.with(context).load("http://www5b.biglobe.ne.jp/~nobusann/777/honmen/si7.gif").into((ImageView)view.findViewById(R.id.image_top));
         aq.id(R.id.button_mogi).clicked(new View.OnClickListener() {
             @Override

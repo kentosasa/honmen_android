@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/mainColor"
-                android:text="運転仮免許問題集"
+                android:text="運転免許問題集"
                 android:id="@+id/text_title"
                 android:layout_gravity="center_horizontal" />
 

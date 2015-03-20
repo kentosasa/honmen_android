@@ -1,25 +1,21 @@
-package com.karimen.kento.karimen;
+package com.karimen.kento.honmen;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-import com.androidquery.callback.BitmapAjaxCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,9 +39,7 @@ public class MogiFragment extends Fragment{
     int question_num = 0;
 
     public MogiFragment() {
-        // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -98,7 +92,6 @@ public class MogiFragment extends Fragment{
             ft.add(R.id.container, mogiResultFragment);
             ft.addToBackStack(null);
             ft.commit();
-
         }else{
             question_num++;
             setQuestion();
@@ -107,25 +100,10 @@ public class MogiFragment extends Fragment{
     public void setQuestion(){
         String image_url = problems.get(question_num).getQuestion_image_url();
         if (image_url.length() > 5){
-            Log.e("url", image_url);
             aq.id(R.id.image_problem).visible();
-            aq.id(R.id.image_problem).image(image_url, true, true, 0, 0, new BitmapAjaxCallback(){
-                @Override
-                protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
-                    super.callback(url, iv, bm, status);
-                    Toast.makeText(context, status.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            aq.id(R.id.image_problem).image(image_url);
         }else{
             aq.id(R.id.image_problem).gone();
-            aq.id(R.id.image_problem).visible();
-            aq.id(R.id.image_problem).image("http://www5b.biglobe.ne.jp/~nobusann/777/honmen/hyou012g.gif", false, false, 0, 0, new BitmapAjaxCallback(){
-                @Override
-                protected void callback(String url, ImageView iv, Bitmap bm, AjaxStatus status) {
-                    super.callback(url, iv, bm, status);
-                    Toast.makeText(context, status.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
         }
         aq.id(R.id.text_problem).text("Q." + (question_num+1) + "\n" + problems.get(question_num).question_text);
     }

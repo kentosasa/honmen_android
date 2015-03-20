@@ -58,19 +58,19 @@
                 android:textColor="@color/mainTextColor"
                 android:text="問題文" />
 
-            <ImageView
-                android:id="@+id/image_explanation"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:visibility="gone"
-                android:layout_gravity="center_horizontal" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/mainTextColor"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/text_problem" />
+
+            <ImageView
+                android:id="@+id/image_explanation"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="match_parent"

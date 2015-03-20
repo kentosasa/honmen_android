@@ -1,23 +1,14 @@
-package com.karimen.kento.karimen;
+package com.karimen.kento.honmen;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.androidquery.AQuery;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
 
 
 public class ExplanationFragment extends Fragment{
@@ -39,11 +30,10 @@ public class ExplanationFragment extends Fragment{
 
         String image_url = problem.getQuestion_image_url();
         if (image_url.length() > 5){
-            aq.id(R.id.image_problem).visible();
-            aq.id(R.id.image_problem).image(image_url);
+            aq.id(R.id.image_explanation).visible();
+            aq.id(R.id.image_explanation).image(image_url);
         }else{
-            Log.e("Image Empty", "Image Empty");
-            aq.id(R.id.image_problem).gone();
+            aq.id(R.id.image_explanation).gone();
         }
         aq.id(R.id.text_problem).text(problem.getQuestion_text());
         aq.id(R.id.text_explanation).text(problem.getExplanation());
